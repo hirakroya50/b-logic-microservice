@@ -1,5 +1,5 @@
 // src/auth/strategies/jwt.strategy.ts
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.get<string>('JWT_SECRET_KEY'),
+      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
     });
   }
 
@@ -21,10 +21,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.prisma.user.findUnique({
       where: { id: payload.userId },
     });
+    // add own strategy to verfy the request
 
     if (!user) {
       throw new Error('User not found');
     }
+    // if (user.id === 1) {
+    //   console.log('user one esce -----');
+    //   throw new BadRequestException('user one esche333');
+    // }
     if (!user.isVerified) {
       return {
         payload,
