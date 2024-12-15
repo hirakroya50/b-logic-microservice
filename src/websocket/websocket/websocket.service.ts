@@ -10,14 +10,15 @@ export class WebsocketService implements OnModuleInit {
 
     this.wss.on('connection', (ws) => {
       console.log('Client connected');
+      ws.on('error', console.error);
 
-      ws.on('message', (message) => {
+      ws.on('message', (message, isBinary) => {
         console.log('Received:', message.toString());
 
         // Broadcast the message to all clients
         this.wss.clients.forEach((client) => {
           if (client.readyState === ws.OPEN) {
-            client.send(message.toString());
+            client.send(message.toString(), { binary: isBinary });
           }
         });
       });
