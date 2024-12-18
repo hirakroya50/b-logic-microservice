@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from './products/guards/jwt-auth.guard';
 import { WebsocketModule } from './websocket/websocket.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { WebsocketModule } from './websocket/websocket.module';
     ProductsModule,
     PrismaModule,
     WebsocketModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService, JwtStrategy, JwtAuthGuard],
