@@ -4,64 +4,67 @@ import { WebSocketServer } from 'ws';
 
 @Injectable()
 export class WebsocketService implements OnModuleInit {
-  private wss: WebSocketServer;
+  private redis_WS_Server: WebSocketServer;
+  private chat_WS_Server: WebSocketServer;
   constructor(private readonly redisService: RedisService) {}
   onModuleInit() {
-    this.wss = new WebSocketServer({ port: 8080 });
+    // Chat WebSocket Server
+    this.chat_WS_Server = new WebSocketServer({ port: 8080 });
+    this.setupChatWebSocketServer(this.chat_WS_Server);
 
-    this.wss.on('connection', (ws) => {
-      console.log('Client connected--1-->');
+    // Redis Pub/Sub WebSocket Server
+    this.redis_WS_Server = new WebSocketServer({ port: 8081 });
+    this.setupRedisWebSocketServer(this.redis_WS_Server);
+
+    console.log('WebSocket servers are running:');
+    console.log('Redis Pub/Sub: ws://localhost:8081');
+    console.log('Chat Application: ws://localhost:8080');
+  }
+
+  private setupRedisWebSocketServer(wss: WebSocketServer) {
+    wss.on('connection', (ws) => {
+      console.log('Redis Pub/Sub - Client connected');
+
       ws.on('error', console.error);
 
-      ws.on('message', (message, isBinary) => {
-        console.log('Received:--2-->', message.toString());
-
-        ws.send(`Echo: ${message.toString()}`, { binary: isBinary });
-      });
-
       ws.on('close', () => {
-        console.log('Client disconnected---3-->');
+        console.log('Redis Pub/Sub - Client disconnected');
       });
     });
 
-    console.log('WebSocket server is running on ws://localhost:8080');
-    this.redisService.startSubscriber((channel, message) => {
-      console.log(
-        `Broadcasting message from channel --4--->${channel}:`,
-        message,
-      );
-
-      this.wss.clients.forEach((client) => {
+    // Subscribe to Redis messages and broadcast to all connected clients
+    this.redisService.startSubscriber((pubsubKey, message) => {
+      console.log(`Redis Pub/Sub - Broadcasting message: ${message}`);
+      wss.clients.forEach((client) => {
         if (client.readyState === client.OPEN) {
-          client.send(message);
+          client.send(`Redis message from ${pubsubKey}: ${message}`);
         }
       });
     });
   }
 
-  // onModuleInit() {
-  //   this.wss = new WebSocketServer({ port: 8080 });
+  private setupChatWebSocketServer(wss: WebSocketServer) {
+    wss.on('connection', (ws) => {
+      console.log('Chat Application - Client connected');
 
-  //   this.wss.on('connection', (ws) => {
-  //     console.log('Client connected');
-  //     ws.on('error', console.error);
+      ws.on('error', console.error);
 
-  //     ws.on('message', (message, isBinary) => {
-  //       console.log('Received:', message.toString());
+      ws.on('message', (message, isBinary) => {
+        console.log('Chat Application - Received:', message.toString());
 
-  //       // Broadcast the message to all clients
-  //       this.wss.clients.forEach((client) => {
-  //         if (client.readyState === ws.OPEN) {
-  //           client.send(message.toString(), { binary: isBinary });
-  //         }
-  //       });
-  //     });
+        // Broadcast the chat message to all connected clients
+        wss.clients.forEach((client) => {
+          if (client.readyState === client.OPEN) {
+            client.send(`Chat message: ${message.toString()}`, {
+              binary: isBinary,
+            });
+          }
+        });
+      });
 
-  //     ws.on('close', () => {
-  //       console.log('Client disconnected');
-  //     });
-  //   });
-
-  //   console.log('WebSocket server is running on ws://localhost:8080');
-  // }
+      ws.on('close', () => {
+        console.log('Chat Application - Client disconnected');
+      });
+    });
+  }
 }
