@@ -10,6 +10,10 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from './products/guards/jwt-auth.guard';
 import { WebsocketModule } from './websocket/websocket.module';
 import { RedisModule } from './redis/redis.module';
+import { AuthModule } from './auth/auth.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver } from '@nestjs/apollo';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -28,10 +32,16 @@ import { RedisModule } from './redis/redis.module';
       isGlobal: true, // Makes ConfigService available globally
     }),
 
+    GraphQLModule.forRoot({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    }),
+
     ProductsModule,
     PrismaModule,
     WebsocketModule,
     RedisModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService, JwtStrategy, JwtAuthGuard],
