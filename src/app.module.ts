@@ -14,6 +14,9 @@ import { AuthModule } from './auth/auth.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver } from '@nestjs/apollo';
 import { join } from 'path';
+import { S3Service } from './s3/s3.service';
+import { S3Resolver } from './s3/s3.resolver';
+import { S3Module } from './s3/s3.module';
 
 @Module({
   imports: [
@@ -42,9 +45,10 @@ import { join } from 'path';
     WebsocketModule,
     RedisModule,
     AuthModule,
+    S3Module,
   ],
   controllers: [AppController],
-  providers: [AppService, JwtService, JwtStrategy, JwtAuthGuard],
+  providers: [AppService, JwtService, JwtStrategy, JwtAuthGuard, S3Service, S3Resolver],
 })
 export class AppModule {}
 

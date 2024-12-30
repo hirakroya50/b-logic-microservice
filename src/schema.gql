@@ -16,10 +16,14 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Query {
+  listFiles: [String!]!
+  getFileUrl(fileKey: String!): String!
   users: [User!]!
 }
 
 type Mutation {
+  getUploadUrl(format: String!, contentType: String!): String!
+  deleteFile(fileKey: String!): Boolean!
   signUp(email: String!, username: String!, mobile: String!, password: String!): User!
   deleteUser(email: String!): Boolean!
   updateUser(id: String!, username: String, mobile: String): User!
