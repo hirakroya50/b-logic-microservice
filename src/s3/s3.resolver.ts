@@ -15,13 +15,7 @@ export class S3Resolver {
 
   @Query(() => [String])
   async listFiles(): Promise<string[]> {
-    const result = await this.s3Service.listFiles();
-    if (result?.Contents) {
-      return result.Contents.map((item) => item.Key) ?? [];
-    }
-
-    // Return an empty array if no files are found
-    return [];
+    return await this.s3Service.listFiles();
   }
 
   @Query(() => String)
