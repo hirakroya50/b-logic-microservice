@@ -49,7 +49,7 @@ export class WebsocketService implements OnModuleInit {
       ws.on('error', console.error);
 
       ws.on('message', (message, isBinary) => {
-        console.log('Chat Application - Received:', message.toString());
+        // console.log('Chat Application - Received:', message.toString());
 
         // Broadcast the chat message to all connected clients
         wss.clients.forEach((client) => {

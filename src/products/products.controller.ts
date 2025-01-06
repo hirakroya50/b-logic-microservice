@@ -19,7 +19,7 @@ export class ProductsController {
   @Get()
   @UseGuards(JwtAuthGuard) // Protect the endpoint
   findAll(@Request() req) {
-    console.log('req==', req.user);
+    // console.log('req==', req.user);
     return this.productsService.findAll();
   }
 

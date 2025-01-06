@@ -78,7 +78,7 @@ export class AuthService {
         data,
       });
 
-      console.log({ updateUser });
+      // console.log({ updateUser });
 
       return updateUser;
     } catch (error) {
