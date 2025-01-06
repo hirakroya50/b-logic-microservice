@@ -34,10 +34,9 @@ export class WebsocketService implements OnModuleInit {
 
     // Subscribe to Redis messages and broadcast to all connected clients
     this.redisService.startSubscriber((pubsubKey, message) => {
-      console.log(`Redis Pub/Sub - Broadcasting message: ${message}`);
       wss.clients.forEach((client) => {
         if (client.readyState === client.OPEN) {
-          client.send(`Redis message from ${pubsubKey}: ${message}`);
+          client.send(`${message}`);
         }
       });
     });
