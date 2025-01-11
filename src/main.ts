@@ -10,6 +10,7 @@ async function bootstrap() {
       'http://localhost:3000',
       'http://localhost:5173',
       'https://d2yq29g6vw6zn5.cloudfront.net',
+      'https://d145qj8np6zmr.cloudfront.net',
     ], // Allow requests from your frontend's origin
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allowed HTTP methods
     allowedHeaders: 'Content-Type, Accept', // Allowed headers
