@@ -16,7 +16,7 @@ import { Response, Request as ExpressRequest } from 'express';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Get()
+  @Get('/')
   @UseGuards(JwtAuthGuard) // Protect the endpoint
   findAll(@Request() req) {
     // console.log('req==', req.user);

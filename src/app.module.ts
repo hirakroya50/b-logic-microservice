@@ -48,7 +48,14 @@ import { S3Module } from './s3/s3.module';
     S3Module,
   ],
   controllers: [AppController],
-  providers: [AppService, JwtService, JwtStrategy, JwtAuthGuard, S3Service, S3Resolver],
+  providers: [
+    AppService,
+    JwtService,
+    JwtStrategy,
+    JwtAuthGuard,
+    S3Service,
+    S3Resolver,
+  ],
 })
 export class AppModule {}
 
