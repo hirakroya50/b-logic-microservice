@@ -15,26 +15,30 @@ export class ProductsService {
     return 'This action adds a new product';
   }
 
-  async findAll() {
-    const allUser = await this.prismaService.user.findMany();
-    return allUser;
+  async findAll(req) {
+    const { payload, isVerifiedUser } = req?.user;
+    return {
+      payload,
+      status: 'Dummy operation successful',
+      message: `user is using a protected route. user: ${isVerifiedUser ? 'VERIFIED' : 'NOT-VERIFIED'}`,
+    };
   }
 
-  async accessTokenTest({ req, res }: { req: ExpressRequest; res: Response }) {
+  async refreshTokenTest({ req, res }: { req: ExpressRequest; res: Response }) {
     try {
       // Extract refresh token from cookies
-      const accessToken = req?.cookies?.accessToken;
-      console.log('refresh token ======', accessToken);
+      const refreshToken = req?.cookies?.refreshToken;
+      console.log('refresh token ======>', refreshToken);
 
-      if (!accessToken) {
+      if (!refreshToken) {
         throw new HttpException(
-          'No accessToken  provided',
+          'No refreshToken  provided',
           HttpStatus.UNAUTHORIZED,
         );
       }
 
       // Return a success response
-      return res.status(HttpStatus.OK).json({ accessToken });
+      return res.status(HttpStatus.OK).json({ refreshToken });
     } catch (error) {
       console.error('Error during refresh token:', error.message);
 

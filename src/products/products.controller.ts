@@ -16,15 +16,15 @@ import { Response, Request as ExpressRequest } from 'express';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Get('/')
+  @Get('/protected-route')
   @UseGuards(JwtAuthGuard) // Protect the endpoint
   findAll(@Request() req) {
     // console.log('req==', req.user);
-    return this.productsService.findAll();
+    return this.productsService.findAll(req);
   }
 
-  @Post('/access-token-test')
-  async accessTokenTest(@Req() req: ExpressRequest, @Res() res: Response) {
-    return this.productsService.accessTokenTest({ req, res });
+  @Post('/refresh-token-test')
+  async refreshTokenTest(@Req() req: ExpressRequest, @Res() res: Response) {
+    return this.productsService.refreshTokenTest({ req, res });
   }
 }
