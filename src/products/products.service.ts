@@ -28,7 +28,6 @@ export class ProductsService {
     try {
       // Extract refresh token from cookies
       const refreshToken = req?.cookies?.refreshToken;
-      console.log('refresh token ======>', refreshToken);
 
       if (!refreshToken) {
         throw new HttpException(
